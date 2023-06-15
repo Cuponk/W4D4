@@ -17,32 +17,6 @@ end
 # p naive_windowed_max_range([1, 0, 2, 5, 4, 8], 4) == 6 # 2, 5, 4, 8
 # p naive_windowed_max_range([1, 3, 2, 5, 4, 8], 5) == 6 # 3, 2, 5, 4, 8
 
-class MyQueue
-    def initialize
-        @store = []
-    end
-
-    def enqueue(el)
-        @store << el
-    end
-
-    def dequeue
-        @store.shift
-    end
-
-    def peek
-        @store.first
-    end
-
-    def size
-        @store.length
-    end
-
-    def empty?
-        @store.empty?
-    end
-end
-
 class MyStack
     def initialize
         @store = []
@@ -71,25 +45,33 @@ end
 
 class StackQueue
     def initialize
-        @store = MyStack.new
+        @in_stack = MyStack.new
+        @out_stack = MyStack.new
+        @size = 0
     end
 
-    def size
-        @store.length
-    end
+    attr_reader :size
 
     def empty?
-        @store.length == 0
+        @size == 0
     end
 
-    def enqueue
-        
+    def enqueue(ele)
+        @in_stack.push(ele)
+        @size += 1
     end
 
     def dequeue
-
+        unless @out_stack.empty? && @in_stack.empty?
+            flip if @out_stack.empty? && !@in_stack.empty?
+            @out_stack.pop
+            @size -= 1
+        end
     end
+    
+    private
 
-
-
+    def flip
+        @out_stack.push(@in_stack.pop) until @in_stack.empty?
+    end
 end

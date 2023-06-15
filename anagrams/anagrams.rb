@@ -58,9 +58,9 @@ def anagram_phase_iv_bonus?(str_1, str_2)
     count = Hash.new(0)
 
     str_1.each_char { |char| count[char] += 1 }
-    str_2.each_char { |char| count[char] += 1 }
+    str_2.each_char { |char| count[char] -= 1 }
 
-    count.all? { |k, v| v == 2 }
+    count.all? { |k, v| v == 0 }
 end
 
 # time complexity is linear, O(n)

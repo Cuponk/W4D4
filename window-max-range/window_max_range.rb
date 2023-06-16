@@ -17,17 +17,31 @@ end
 # p naive_windowed_max_range([1, 0, 2, 5, 4, 8], 4) == 6 # 2, 5, 4, 8
 # p naive_windowed_max_range([1, 3, 2, 5, 4, 8], 5) == 6 # 3, 2, 5, 4, 8
 
-class MyStack
+class MinMaxStack
     def initialize
         @store = []
+        @max = 0
+        @min = 0
     end
 
-    def push(el)
-        @store << el
+    def push(ele)
+        if @store.empty?
+            @store << { ele: ele, max: ele, min: ele }
+        else
+            @store << { ele: ele, max: peek[:max] > ele ? peek[:max] : ele, max: peek[:min] < ele ? peek[:min] : ele }
+        end
     end
     
     def pop
-        @store.pop
+        @store.pop[:ele]
+    end
+
+    def max
+        peek[:max]
+    end
+
+    def min
+        peek[:min]
     end
     
     def peek
@@ -43,10 +57,10 @@ class MyStack
     end
 end
 
-class StackQueue
+class MinMaxStackQueue
     def initialize
-        @in_stack = MyStack.new
-        @out_stack = MyStack.new
+        @in_stack = MinMaxStack.new
+        @out_stack = MinMaxStack.new
         @size = 0
     end
 
@@ -69,9 +83,43 @@ class StackQueue
         end
     end
     
+    def peek
+        @out_stack.peek
+    end
+    
+    def max
+        peek[:max]
+    end
+    
+    def min
+        peek[:min]
+    end
+    
     private
 
     def flip
         @out_stack.push(@in_stack.pop) until @in_stack.empty?
     end
 end
+
+def windowed_max_range(array, window_size)
+    current_max_range = 0
+    queue = MinMaxStackQueue.new
+
+    until array.empty?
+        queue.enqueue(array.shift)
+        
+        if queue.size < window_size
+            range = queue.max - queue.min
+            current_max_range = range if range > current_max_range
+            queue.dequeue
+        end
+    end
+
+    current_max_range
+end
+
+p windowed_max_range([1, 0, 2, 5, 4, 8], 2) == 4 # 4, 8
+p windowed_max_range([1, 0, 2, 5, 4, 8], 3) == 5 # 0, 2, 5
+p windowed_max_range([1, 0, 2, 5, 4, 8], 4) == 6 # 2, 5, 4, 8
+p windowed_max_range([1, 3, 2, 5, 4, 8], 5) == 6 # 3, 2, 5, 4, 8

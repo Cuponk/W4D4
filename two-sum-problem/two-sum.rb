@@ -45,24 +45,42 @@ end
 # p okay_two_sum?(array, 6) # => true
 # p okay_two_sum?(array, 10) # => false
 
-def two_sum?(array, target_sum)
-    bank = {}
-
+def two_sum?(array, target)
+    bank = {} 
+    
     array.each do |x|
-        potential_y = target_sum - x
+        potential_y = target - x
 
         if bank[potential_y]
             return true
         else
-            bank[x] = true 
+            bank[x] = true
         end
     end
-
+    
     false
 end
 
+# def two_sum?(array, target_sum)
+#     bank = Hash.new { |h, k| h[k] = [] }
+#     pairs = []
+
+#     array.each_with_index do |x, i|
+#         potential_y = target_sum - x
+#         bank[x] << i
+#     end
+
+#     bank.each do |k, v|
+#         potential_y = target_sum - k
+#         pairs << [v, bank[potential_y]]
+#     end
+
+#     pairs
+    
+# end
+
 # time complexity is linear, O(n)
 
-# array = [0, 1, 5, 7]
-# p two_sum?(array, 6) # => true
-# p two_sum?(array, 10) # => false
+array = [0, 1, 5, 7]
+p two_sum?(array, 6) # => true
+p two_sum?(array, 10) # => false
